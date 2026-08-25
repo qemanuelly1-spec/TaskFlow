@@ -1,0 +1,19 @@
+# .NET
+backend/**/bin/
+backend/**/obj/
+*.user
+
+# appsettings com dados sensíveis (opcional manter fora do git)
+# backend/TaskFlow.Api/appsettings.json
+
+# Sistema
+.DS_Store
+Thumbs.db
+
+# IDEs
+.vs/
+.vscode/
+*.suo
+
+backend/**/appsettings.json
+backend/**/appsettings.Development.json

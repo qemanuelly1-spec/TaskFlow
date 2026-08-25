@@ -1,0 +1,35 @@
+body {
+  background-color: #f4f6f8;
+}
+
+.tarefa-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+}
+
+.tarefa-item.concluida .tarefa-titulo {
+  text-decoration: line-through;
+  color: #6c757d;
+}
+
+.tarefa-titulo {
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+}
+
+.tarefa-descricao {
+  font-size: 0.9rem;
+  color: #555;
+  margin-bottom: 0.25rem;
+}
+
+.tarefa-data {
+  font-size: 0.75rem;
+  color: #999;
+}
+
+.tarefa-acoes .btn {
+  margin-left: 0.25rem;
+}

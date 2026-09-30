@@ -2,6 +2,7 @@
 const API_URL = "http://localhost:5000/api/tarefas";
 
 const form = document.getElementById("tarefaForm");
+const prioridadeInput = document.getElementById("prioridade")
 const tarefaIdInput = document.getElementById("tarefaId");
 const tituloInput = document.getElementById("titulo");
 const descricaoInput = document.getElementById("descricao");
@@ -29,6 +30,7 @@ function mostrarAlerta(mensagem, tipo = "success") {
   }, 4000);
 }
 
+//Aqui estamos criando uma funçao para formatar a data de acordo com a data atual dia/mês/ano hora:minuto
 function formatarData(dataIso) {
   const data = new Date(dataIso);
   return data.toLocaleDateString("pt-BR", {
@@ -40,47 +42,50 @@ function formatarData(dataIso) {
   });
 }
 
+//Cria uma função para voltar o formulário ao estado inicial.
 function resetarFormulario() {
-  form.reset();
+  form.reset(); //Limpa/restaura os campos do formulário.
   tarefaIdInput.value = "";
   formTitle.textContent = "Nova tarefa";
   submitBtn.innerHTML = '<i class="bi bi-plus-lg"></i> Adicionar tarefa';
   cancelEditBtn.classList.add("d-none");
 }
 
-// ---------- Chamadas à API ----------
+// ---------- Chamadas à API ---------- 
+//
 
 async function listarTarefas() {
   try {
     let url = API_URL;
     if (filtroAtual === "pendentes") url += "?concluida=false";
     if (filtroAtual === "concluidas") url += "?concluida=true";
-
+   
+    //Aqui ele busca GEt
     const resposta = await fetch(url);
-    if (!resposta.ok) throw new Error("Erro ao buscar tarefas.");
-
-    const tarefas = await resposta.json();
-    renderizarTarefas(tarefas);
+    if (!resposta.ok) throw new Error("Erro ao buscar tarefas."); //Verifica se a API respondeu corretamente.
+    console.log(resposta)
+    const tarefas = await resposta.json();  //Pega o JSON enviado pelo backend.
+    renderizarTarefas(tarefas);//Essa função vai colocar as tarefas na tela.
   } catch (erro) {
     console.error(erro);
     mostrarAlerta("Não foi possível carregar as tarefas. Verifique se a API está rodando.", "danger");
   }
 }
-
+//recebe os dados da nova tarefa.
 async function criarTarefa(dados) {
   const resposta = await fetch(API_URL, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
+    method: "POST", //Criar um novo recurso.
+    headers: { "Content-Type": "application/json" }, //Aqui tranforma o objeto javaScript em json
     body: JSON.stringify(dados)
   });
 
-  if (!resposta.ok) throw new Error("Erro ao criar tarefa.");
-  return resposta.json();
+  if (!resposta.ok) throw new Error("Erro ao criar tarefa."); //Se a API falhar, lança erro.
+  return resposta.json(); //Retorna a resposta do backend.
 }
 
 async function atualizarTarefa(id, dados) {
   const resposta = await fetch(`${API_URL}/${id}`, {
-    method: "PUT",
+    method: "PUT", //Retorna a resposta do backend.
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(dados)
   });
@@ -90,18 +95,19 @@ async function atualizarTarefa(id, dados) {
 }
 
 async function alternarConclusao(id) {
-  const resposta = await fetch(`${API_URL}/${id}/concluir`, { method: "PATCH" });
+  const resposta = await fetch(`${API_URL}/${id}/concluir`, { method: "PATCH" }); //ficaria assim na URL PATCH /api/tarefas/5/concluir
   if (!resposta.ok) throw new Error("Erro ao atualizar status da tarefa.");
-  return resposta.json();
+  return resposta.json(); //Retorna a tarefa atualizada.
 }
 
-async function excluirTarefa(id) {
-  const resposta = await fetch(`${API_URL}/${id}`, { method: "DELETE" });
+async function excluirTarefa(id) { //Recebe o ID.
+  const resposta = await fetch(`${API_URL}/${id}`, { method: "DELETE" }); //DELETE /api/tarefas/5 ("Backend, exclua a tarefa 5.")
   if (!resposta.ok) throw new Error("Erro ao excluir tarefa.");
 }
 
 // ---------- Renderização ----------
 
+//Essa função recebe as tarefas vindas da API e transforma os dados em HTML.
 function renderizarTarefas(tarefas) {
   listaTarefas.innerHTML = "";
 
@@ -114,10 +120,10 @@ function renderizarTarefas(tarefas) {
     return;
   }
 
-  tarefas.forEach((tarefa) => {
+  tarefas.forEach((tarefa) => { //Percorrendo cada tarefa
     const item = document.createElement("div");
     item.className = `list-group-item tarefa-item ${tarefa.concluida ? "concluida" : ""}`;
-
+    const prioridade = infoPrioridade(tarefa.prioridade); 
     item.innerHTML = `
       <div>
         <div class="tarefa-titulo">${escapeHtml(tarefa.titulo)}</div>
@@ -147,7 +153,17 @@ function escapeHtml(texto) {
   return div.innerHTML;
 }
 
+function infoPrioridade(valor) {
+  switch (valor) {
+    case 2: return { label: "Alta", classe: "bg-danger" };
+    case 1: return { label: "Média", classe: "bg-warning text-dark" };
+    default: return { label: "Baixa", classe: "bg-success" };
+  }
+}
+
 // ---------- Eventos ----------
+//"Essa parte controla os eventos do sistema: criar, editar, excluir, concluir tarefas e 
+// filtrar a lista. Ela captura as ações do usuário, chama as funções da API e atualiza a interface."
 
 form.addEventListener("submit", async (e) => {
   e.preventDefault();
@@ -155,7 +171,8 @@ form.addEventListener("submit", async (e) => {
   const dados = {
     titulo: tituloInput.value.trim(),
     descricao: descricaoInput.value.trim(),
-    concluida: concluidaInput.checked
+    concluida: concluidaInput.checked,
+    prioridade: parseInt(prioridadeInput.value, 10) 
   };
 
   if (!dados.titulo) {
@@ -207,6 +224,7 @@ listaTarefas.addEventListener("click", async (e) => {
       tituloInput.value = tarefa.titulo;
       descricaoInput.value = tarefa.descricao || "";
       concluidaInput.checked = tarefa.concluida;
+      prioridadeInput.value = tarefa.prioridade; 
 
       formTitle.textContent = "Editar tarefa";
       submitBtn.innerHTML = '<i class="bi bi-save"></i> Salvar alterações';

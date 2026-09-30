@@ -21,6 +21,7 @@ namespace TaskFlow.Api.Migrations
                     Titulo = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
                     Descricao = table.Column<string>(type: "text", nullable: true),
                     Concluida = table.Column<bool>(type: "boolean", nullable: false, defaultValue: false),
+                    Prioridade = table.Column<int>(type: "integer", nullable: false),
                     DataCriacao = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "now()")
                 },
                 constraints: table =>

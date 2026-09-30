@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using TaskFlow.Api.Models; // <-- 1. Importante: importe onde está a classe/enum Prioridade
 
 namespace TaskFlow.Api.DTOs;
 
@@ -12,6 +13,9 @@ public class TarefaCreateDto
     public string? Descricao { get; set; }
 
     public bool Concluida { get; set; } = false;
+    
+    // 2. Corrigido: 'Baixa' com 'B' maiúsculo
+    public Prioridade Prioridade { get; set; } = Prioridade.Baixa; 
 }
 
 // Usado para atualizar uma tarefa existente (PUT)
@@ -24,4 +28,6 @@ public class TarefaUpdateDto
     public string? Descricao { get; set; }
 
     public bool Concluida { get; set; } = false;
+    public Prioridade Prioridade { get; set; } = Prioridade.Baixa; 
+    
 }

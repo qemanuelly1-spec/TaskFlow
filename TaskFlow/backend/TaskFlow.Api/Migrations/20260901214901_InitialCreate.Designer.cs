@@ -12,7 +12,7 @@ using TaskFlow.Api.Data;
 namespace TaskFlow.Api.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260824130136_InitialCreate")]
+    [Migration("20260901214901_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -45,6 +45,9 @@ namespace TaskFlow.Api.Migrations
 
                     b.Property<string>("Descricao")
                         .HasColumnType("text");
+
+                    b.Property<int>("Prioridade")
+                        .HasColumnType("integer");
 
                     b.Property<string>("Titulo")
                         .IsRequired()

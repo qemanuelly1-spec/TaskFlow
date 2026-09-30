@@ -8,13 +8,14 @@ namespace TaskFlow.Api.Controllers;
 
 [ApiController]
 [Route("api/tarefas")]
-public class TarefasController : ControllerBase
+public class TarefasController : ControllerBase  //Ativa um comportamento do ASP.NET (aqui a classe tarefasController, esta herdando a classe
+//ControllerBase)
 {
-    private readonly AppDbContext _context;
+    private readonly AppDbContext _context; //(Esse mecanismo se chama: INJEÇAO DE DEPENDECIAS)
 
     public TarefasController(AppDbContext context)
     {
-        _context = context;
+        _context = context; // A dependência é injetada aqui
     }
 
     // GET: api/tarefas
@@ -56,6 +57,7 @@ public class TarefasController : ControllerBase
             Titulo = dto.Titulo,
             Descricao = dto.Descricao,
             Concluida = dto.Concluida,
+            Prioridade = dto.Prioridade,
             DataCriacao = DateTime.UtcNow
         };
 
@@ -78,6 +80,7 @@ public class TarefasController : ControllerBase
 
         tarefa.Titulo = dto.Titulo;
         tarefa.Descricao = dto.Descricao;
+        tarefa.Prioridade = dto.Prioridade;
         tarefa.Concluida = dto.Concluida;
 
         await _context.SaveChangesAsync();

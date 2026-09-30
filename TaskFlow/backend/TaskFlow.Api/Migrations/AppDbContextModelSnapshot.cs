@@ -43,6 +43,9 @@ namespace TaskFlow.Api.Migrations
                     b.Property<string>("Descricao")
                         .HasColumnType("text");
 
+                    b.Property<int>("Prioridade")
+                        .HasColumnType("integer");
+
                     b.Property<string>("Titulo")
                         .IsRequired()
                         .HasMaxLength(100)
